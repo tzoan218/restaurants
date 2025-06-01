@@ -1,8 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+import GyrosImg from './assets/images/IMG-20230909-WA0005.jpg';
+import SalmonImg from './assets/images/IMG-20231125-WA0000.jpeg';
+import CarrotsImg from './assets/images/IMG-20231029-WA0004.jpeg';
+import DessertImg from './assets/images/IMG-20231014-WA0008.jpeg';
+import SoupImg from './assets/images/IMG-20230221-WA0000.jpg';
 
 function App() {
-  const [activeSection, setActiveSection] = useState('home')
+  const [userRole, setUserRole] = useState('client'); // Default to client
+  const [activeSection, setActiveSection] = useState('home');
+  const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    const role = localStorage.getItem('userRole');
+    if (role === 'worker') {
+      setUserRole('worker');
+    }
+  }, []);
+
+  const handleLogin = () => {
+    localStorage.setItem('userRole', 'worker');
+    setUserRole('worker');
+    setShowLogin(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userRole');
+    setUserRole('client');
+  };
 
   return (
     <div className="app">
@@ -13,10 +38,35 @@ function App() {
           <button onClick={() => setActiveSection('menu')}>Menu</button>
           <button onClick={() => setActiveSection('hours')}>Hours</button>
           <button onClick={() => setActiveSection('reservations')}>Reservations</button>
+          {userRole === 'worker' ? (
+            <button onClick={handleLogout}>Logout</button>
+          ) : (
+            <button onClick={() => setShowLogin(true)}>Employee Login</button>
+          )}
         </div>
       </nav>
 
+      {showLogin && userRole !== 'worker' && (
+        <div className="login-page">
+          <h1>Employee Login</h1>
+          <button onClick={handleLogin}>Login as Worker</button>
+          <button onClick={() => setShowLogin(false)}>Cancel</button>
+        </div>
+      )}
+
       <main className="main-content">
+        {userRole === 'client' ? (
+          <div className="client-view">
+            <h1>Welcome, Client!</h1>
+            <p>You can view the menu and place orders here.</p>
+          </div>
+        ) : (
+          <div className="worker-view">
+            <h1>Welcome, Worker!</h1>
+            <p>You can manage reservations and update the menu here.</p>
+          </div>
+        )}
+
         {activeSection === 'home' && (
           <div className="home-section">
             <h1>Welcome to Gourmet Haven</h1>
@@ -27,6 +77,13 @@ function App() {
         {activeSection === 'menu' && (
           <div className="menu-section">
             <h2>Our Menu</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, margin: '24px 0' }}>
+              <img src={GyrosImg} alt="Gyros" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+              <img src={SalmonImg} alt="Salmon" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+              <img src={CarrotsImg} alt="Carrots" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+              <img src={DessertImg} alt="Dessert" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+              <img src={SoupImg} alt="Soup" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+            </div>
             <div className="menu-categories">
               <div className="menu-category">
                 <h3>Starters</h3>
