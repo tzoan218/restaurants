@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
 import GyrosImg from './assets/images/IMG-20230909-WA0005.jpg';
 import SalmonImg from './assets/images/IMG-20231125-WA0000.jpeg';
 import CarrotsImg from './assets/images/IMG-20231029-WA0004.jpeg';
@@ -7,7 +7,7 @@ import DessertImg from './assets/images/IMG-20231014-WA0008.jpeg';
 import SoupImg from './assets/images/IMG-20230221-WA0000.jpg';
 
 function App() {
-  const [userRole, setUserRole] = useState('client'); // Default to client
+  const [userRole, setUserRole] = useState('client');
   const [activeSection, setActiveSection] = useState('home');
   const [showLogin, setShowLogin] = useState(false);
 
@@ -63,7 +63,23 @@ function App() {
         ) : (
           <div className="worker-view">
             <h1>Welcome, Worker!</h1>
-            <p>You can manage reservations and update the menu here.</p>
+            <div className="worker-actions">
+              <section className="menu-management">
+                <h2>Modify Menu</h2>
+                <button className="action-btn">+ Add New Menu Item</button>
+              </section>
+
+              <section className="reservation-management">
+                <h2>Pending Reservations</h2>
+                <div className="reservation">
+                  <p><strong>John Doe</strong> | 2 guests | 18:00</p>
+                  <div>
+                    <button className="accept-btn">Accept</button>
+                    <button className="reject-btn">Reject</button>
+                  </div>
+                </div>
+              </section>
+            </div>
           </div>
         )}
 
@@ -169,7 +185,7 @@ function App() {
         <p>Phone: (555) 123-4567</p>
       </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
