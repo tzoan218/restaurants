@@ -3,8 +3,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
-  color: #2c3e50;
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  color: #1f2937; /* Deep slate gray */
 }
 
 /* App container */
@@ -14,12 +14,12 @@ body {
   padding: 2rem;
   background: white;
   border-radius: 20px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
 }
 
 /* Navbar */
 .navbar {
-  background: linear-gradient(to right, #00c9ff, #92fe9d);
+  background: linear-gradient(to right, #0f172a, #1e3a8a); /* Navy to indigo */
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -41,7 +41,7 @@ body {
 }
 
 .nav-links button {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   color: white;
   border: none;
   padding: 0.6rem 1rem;
@@ -62,7 +62,7 @@ body {
 .reservations-section {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   padding: 2rem;
   margin-bottom: 2rem;
 }
@@ -70,13 +70,13 @@ body {
 .login-page h1,
 .client-view h1,
 .worker-view h1 {
-  color: #2c3e50;
+  color: #1f2937;
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 
 .login-page button {
-  background: #00c9ff;
+  background: #3b82f6; /* Blue-500 */
   color: white;
   padding: 0.75rem 1.5rem;
   margin: 0.5rem;
@@ -87,7 +87,7 @@ body {
 }
 
 .login-page button:hover {
-  background: #00a2d3;
+  background: #2563eb; /* Blue-600 */
 }
 
 /* Worker panel */
@@ -105,15 +105,15 @@ body {
 
 .menu-management,
 .reservation-management {
-  background: #f9f9f9;
-  border: 1px solid #ddd;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   padding: 1.5rem;
   border-radius: 12px;
 }
 
 /* Add item button */
 .action-btn {
-  background-color: #00c9ff;
+  background-color: #3b82f6;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -123,7 +123,7 @@ body {
 }
 
 .action-btn:hover {
-  background-color: #00a2d3;
+  background-color: #2563eb;
 }
 
 /* Reservation card */
@@ -134,7 +134,7 @@ body {
   background: white;
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e5e7eb;
   margin-top: 1rem;
 }
 
@@ -150,19 +150,19 @@ body {
 }
 
 .accept-btn {
-  background: #27ae60;
+  background: #10b981; /* Emerald-500 */
 }
 
 .reject-btn {
-  background: #e74c3c;
+  background: #ef4444; /* Red-500 */
 }
 
 .accept-btn:hover {
-  background: #219150;
+  background: #059669; /* Emerald-600 */
 }
 
 .reject-btn:hover {
-  background: #c0392b;
+  background: #dc2626; /* Red-600 */
 }
 
 /* Reservation form */
@@ -186,12 +186,12 @@ body {
   width: 100%;
   padding: 0.6rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
 }
 
 .submit-btn {
-  background: #00c9ff;
+  background: #3b82f6;
   color: white;
   padding: 0.75rem;
   width: 100%;
@@ -202,7 +202,7 @@ body {
 }
 
 .submit-btn:hover {
-  background: #00a2d3;
+  background: #2563eb;
 }
 
 /* Section titles */
@@ -210,12 +210,12 @@ body {
 .menu-section h2,
 .hours-section h2 {
   font-size: 2rem;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 /* Footer */
 .footer {
   text-align: center;
   margin-top: 3rem;
-  color: #444;
+  color: #6b7280; /* Gray-500 */
 }
