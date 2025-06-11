@@ -1,28 +1,16 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import GyrosImg from './assets/images/IMG-20230909-WA0005.jpg';
 import SalmonImg from './assets/images/IMG-20231125-WA0000.jpeg';
 import CarrotsImg from './assets/images/IMG-20231029-WA0004.jpeg';
 import DessertImg from './assets/images/IMG-20231014-WA0008.jpeg';
 import SoupImg from './assets/images/IMG-20230221-WA0000.jpg';
+import Login from './pages/Login';
 
-function App() {
-  const [userRole, setUserRole] = useState('client');
+function HomePage({ userRole, setUserRole }) {
   const [activeSection, setActiveSection] = useState('home');
-  const [showLogin, setShowLogin] = useState(false);
-
-  useEffect(() => {
-    const role = localStorage.getItem('userRole');
-    if (role === 'worker') {
-      setUserRole('worker');
-    }
-  }, []);
-
-  const handleLogin = () => {
-    localStorage.setItem('userRole', 'worker');
-    setUserRole('worker');
-    setShowLogin(false);
-  };
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('userRole');
@@ -41,18 +29,10 @@ function App() {
           {userRole === 'worker' ? (
             <button onClick={handleLogout}>Logout</button>
           ) : (
-            <button onClick={() => setShowLogin(true)}>Employee Login</button>
+            <button onClick={() => navigate('/login')}>Employee Login</button>
           )}
         </div>
       </nav>
-
-      {showLogin && userRole !== 'worker' && (
-        <div className="login-page">
-          <h1>Employee Login</h1>
-          <button onClick={handleLogin}>Login as Worker</button>
-          <button onClick={() => setShowLogin(false)}>Cancel</button>
-        </div>
-      )}
 
       <main className="main-content">
         {userRole === 'client' ? (
@@ -68,7 +48,6 @@ function App() {
                 <h2>Modify Menu</h2>
                 <button className="action-btn">+ Add New Menu Item</button>
               </section>
-
               <section className="reservation-management">
                 <h2>Pending Reservations</h2>
                 <div className="reservation">
@@ -94,11 +73,11 @@ function App() {
           <div className="menu-section">
             <h2>Our Menu</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, margin: '24px 0' }}>
-              <img src={GyrosImg} alt="Gyros" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
-              <img src={SalmonImg} alt="Salmon" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
-              <img src={CarrotsImg} alt="Carrots" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
-              <img src={DessertImg} alt="Dessert" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
-              <img src={SoupImg} alt="Soup" style={{ maxWidth: 160, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} />
+              <img src={GyrosImg} alt="Gyros" style={{ maxWidth: 160, borderRadius: 12 }} />
+              <img src={SalmonImg} alt="Salmon" style={{ maxWidth: 160, borderRadius: 12 }} />
+              <img src={CarrotsImg} alt="Carrots" style={{ maxWidth: 160, borderRadius: 12 }} />
+              <img src={DessertImg} alt="Dessert" style={{ maxWidth: 160, borderRadius: 12 }} />
+              <img src={SoupImg} alt="Soup" style={{ maxWidth: 160, borderRadius: 12 }} />
             </div>
             <div className="menu-categories">
               <div className="menu-category">
@@ -133,18 +112,9 @@ function App() {
           <div className="hours-section">
             <h2>Opening Hours</h2>
             <div className="hours-grid">
-              <div className="hours-day">
-                <h3>Monday - Thursday</h3>
-                <p>11:00 AM - 10:00 PM</p>
-              </div>
-              <div className="hours-day">
-                <h3>Friday - Saturday</h3>
-                <p>11:00 AM - 11:00 PM</p>
-              </div>
-              <div className="hours-day">
-                <h3>Sunday</h3>
-                <p>10:00 AM - 9:00 PM</p>
-              </div>
+              <div className="hours-day"><h3>Monday - Thursday</h3><p>11:00 AM - 10:00 PM</p></div>
+              <div className="hours-day"><h3>Friday - Saturday</h3><p>11:00 AM - 11:00 PM</p></div>
+              <div className="hours-day"><h3>Sunday</h3><p>10:00 AM - 9:00 PM</p></div>
             </div>
           </div>
         )}
@@ -153,26 +123,11 @@ function App() {
           <div className="reservations-section">
             <h2>Make a Reservation</h2>
             <form className="reservation-form">
-              <div className="form-group">
-                <label htmlFor="name">Name:</label>
-                <input type="text" id="name" required />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Email:</label>
-                <input type="email" id="email" required />
-              </div>
-              <div className="form-group">
-                <label htmlFor="date">Date:</label>
-                <input type="date" id="date" required />
-              </div>
-              <div className="form-group">
-                <label htmlFor="time">Time:</label>
-                <input type="time" id="time" required />
-              </div>
-              <div className="form-group">
-                <label htmlFor="guests">Number of Guests:</label>
-                <input type="number" id="guests" min="1" max="10" required />
-              </div>
+              <div className="form-group"><label>Name:</label><input type="text" required /></div>
+              <div className="form-group"><label>Email:</label><input type="email" required /></div>
+              <div className="form-group"><label>Date:</label><input type="date" required /></div>
+              <div className="form-group"><label>Time:</label><input type="time" required /></div>
+              <div className="form-group"><label>Guests:</label><input type="number" min="1" max="10" required /></div>
               <button type="submit" className="submit-btn">Book Table</button>
             </form>
           </div>
@@ -185,6 +140,26 @@ function App() {
         <p>Phone: (555) 123-4567</p>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  const [userRole, setUserRole] = useState('client');
+
+  useEffect(() => {
+    const role = localStorage.getItem('userRole');
+    if (role === 'worker') {
+      setUserRole('worker');
+    }
+  }, []);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage userRole={userRole} setUserRole={setUserRole} />} />
+        <Route path="/login" element={<Login setUserRole={setUserRole} />} />
+      </Routes>
+    </Router>
   );
 }
 
