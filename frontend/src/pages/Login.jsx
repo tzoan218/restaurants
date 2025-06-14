@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({ setUserRole }) => {
   const [email, setEmail] = useState('');
-  const [passwordHash, setPasswordHash] = useState('');
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -13,20 +15,21 @@ const Login = () => {
     setMessage('');
 
     try {
+      // Send credentials to backend
       const response = await axios.post('http://localhost:8080/api/users/login', {
         email,
-        passwordHash,
+        password,
       });
 
       if (response.status === 200) {
+        // If login is OK, save role and redirect to dashboard
         setMessage('Login successful!');
-        localStorage.setItem('userRole', 'worker'); // Optional
-        // Redirect or trigger parent state change
-      } else {
-        setMessage('Invalid credentials');
+        localStorage.setItem('userRole', 'worker');
+        if (setUserRole) setUserRole('worker');
+        navigate('/worker');
       }
     } catch (error) {
-      console.error('Login failed:', error);
+      // Handle failed login
       setMessage(error.response?.data || 'Login error. Please try again.');
     } finally {
       setLoading(false);
@@ -50,8 +53,8 @@ const Login = () => {
           <input
             type="password"
             placeholder="Password"
-            value={passwordHash}
-            onChange={(e) => setPasswordHash(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>

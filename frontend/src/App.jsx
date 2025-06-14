@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import './App.css';
 import GyrosImg from './assets/images/IMG-20230909-WA0005.jpg';
 import SalmonImg from './assets/images/IMG-20231125-WA0000.jpeg';
@@ -7,14 +7,18 @@ import CarrotsImg from './assets/images/IMG-20231029-WA0004.jpeg';
 import DessertImg from './assets/images/IMG-20231014-WA0008.jpeg';
 import SoupImg from './assets/images/IMG-20230221-WA0000.jpg';
 import Login from './pages/Login';
+import WorkerDashboard from './pages/WorkerDashboard';
 
+// =================== 🌍 HOMEPAGE COMPONENT ===================
 function HomePage({ userRole, setUserRole }) {
   const [activeSection, setActiveSection] = useState('home');
   const navigate = useNavigate();
 
+  // 🔐 Logout logic for workers
   const handleLogout = () => {
     localStorage.removeItem('userRole');
     setUserRole('client');
+    navigate('/'); // ✅ redirect to home after logout
   };
 
   return (
@@ -26,6 +30,7 @@ function HomePage({ userRole, setUserRole }) {
           <button onClick={() => setActiveSection('menu')}>Menu</button>
           <button onClick={() => setActiveSection('hours')}>Hours</button>
           <button onClick={() => setActiveSection('reservations')}>Reservations</button>
+          {/* 👇 Show 'Login' when client; 'Logout' only when worker */}
           {userRole === 'worker' ? (
             <button onClick={handleLogout}>Logout</button>
           ) : (
@@ -35,32 +40,7 @@ function HomePage({ userRole, setUserRole }) {
       </nav>
 
       <main className="main-content">
-        {userRole === 'client' ? (
-          <div className="client-view">
-            <h1>Welcome, Client!</h1>
-            <p>You can view the menu and place orders here.</p>
-          </div>
-        ) : (
-          <div className="worker-view">
-            <h1>Welcome, Worker!</h1>
-            <div className="worker-actions">
-              <section className="menu-management">
-                <h2>Modify Menu</h2>
-                <button className="action-btn">+ Add New Menu Item</button>
-              </section>
-              <section className="reservation-management">
-                <h2>Pending Reservations</h2>
-                <div className="reservation">
-                  <p><strong>John Doe</strong> | 2 guests | 18:00</p>
-                  <div>
-                    <button className="accept-btn">Accept</button>
-                    <button className="reject-btn">Reject</button>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-        )}
+        {/* 👇 Worker section preview was removed for better security */}
 
         {activeSection === 'home' && (
           <div className="home-section">
@@ -79,6 +59,7 @@ function HomePage({ userRole, setUserRole }) {
               <img src={DessertImg} alt="Dessert" style={{ maxWidth: 160, borderRadius: 12 }} />
               <img src={SoupImg} alt="Soup" style={{ maxWidth: 160, borderRadius: 12 }} />
             </div>
+            {/* Menu list */}
             <div className="menu-categories">
               <div className="menu-category">
                 <h3>Starters</h3>
@@ -112,8 +93,8 @@ function HomePage({ userRole, setUserRole }) {
           <div className="hours-section">
             <h2>Opening Hours</h2>
             <div className="hours-grid">
-              <div className="hours-day"><h3>Monday - Thursday</h3><p>11:00 AM - 10:00 PM</p></div>
-              <div className="hours-day"><h3>Friday - Saturday</h3><p>11:00 AM - 11:00 PM</p></div>
+              <div className="hours-day"><h3>Mon - Thu</h3><p>11:00 AM - 10:00 PM</p></div>
+              <div className="hours-day"><h3>Fri - Sat</h3><p>11:00 AM - 11:00 PM</p></div>
               <div className="hours-day"><h3>Sunday</h3><p>10:00 AM - 9:00 PM</p></div>
             </div>
           </div>
@@ -143,9 +124,11 @@ function HomePage({ userRole, setUserRole }) {
   );
 }
 
+// =================== 🧠 MAIN APP ROUTING ===================
 function App() {
   const [userRole, setUserRole] = useState('client');
 
+  // 📌 Load saved role from localStorage on startup
   useEffect(() => {
     const role = localStorage.getItem('userRole');
     if (role === 'worker') {
@@ -156,8 +139,18 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Public homepage */}
         <Route path="/" element={<HomePage userRole={userRole} setUserRole={setUserRole} />} />
+
+        {/* Login form */}
         <Route path="/login" element={<Login setUserRole={setUserRole} />} />
+
+        {/* Worker-only dashboard */}
+        <Route path="/worker" element={
+          userRole === 'worker'
+            ? <WorkerDashboard />
+            : <Navigate to="/login" />
+        } />
       </Routes>
     </Router>
   );
