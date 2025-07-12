@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservations")
+@CrossOrigin(origins = "http://localhost:5173")  // 👈 A
 public class ReservationController {
 
     @Autowired
@@ -17,6 +18,12 @@ public class ReservationController {
     @GetMapping("/pending")
     public List<Reservation> getPending() {
         return repo.findByStatus("pending");
+    }
+
+    @PostMapping
+    public Reservation createReservation(@RequestBody Reservation reservation) {
+        reservation.setStatus("pending");
+        return repo.save(reservation);
     }
 
     @PostMapping("/{id}/accept")

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:8080';
+
 // === 📋 Component: Reservations Management ===
 // This handles fetching, accepting, and declining pending reservations
 const ReservationsManagement = () => {
@@ -11,7 +13,7 @@ const ReservationsManagement = () => {
   const fetchReservations = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/reservations/pending');
+      const response = await axios.get(`${API_BASE_URL}/api/reservations/pending`);
       setReservations(response.data); // save response to state
     } catch (error) {
       console.error('Error fetching reservations', error);
@@ -28,7 +30,7 @@ const ReservationsManagement = () => {
   // ✅ Accept reservation by ID
   const handleAccept = async (id) => {
     try {
-      await axios.post(`/api/reservations/${id}/accept`);
+      await axios.post(`${API_BASE_URL}/api/reservations/${id}/accept`);
       fetchReservations(); // refresh the list
     } catch (error) {
       console.error('Error accepting reservation', error);
@@ -38,7 +40,7 @@ const ReservationsManagement = () => {
   // ❌ Decline reservation by ID
   const handleDecline = async (id) => {
     try {
-      await axios.post(`/api/reservations/${id}/decline`);
+      await axios.post(`${API_BASE_URL}/api/reservations/${id}/decline`);
       fetchReservations(); // refresh
     } catch (error) {
       console.error('Error declining reservation', error);
@@ -76,7 +78,7 @@ const MenuManagement = () => {
   const fetchMenu = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/menu');
+      const response = await axios.get(`${API_BASE_URL}/api/menu`);
       setMenuItems(response.data);
     } catch (error) {
       console.error('Error fetching menu items', error);
@@ -93,7 +95,7 @@ const MenuManagement = () => {
   const handleAddItem = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/menu', newItem);
+      await axios.post(`${API_BASE_URL}/api/menu`, newItem);
       setNewItem({ name: '', description: '', price: '' });
       fetchMenu(); // refresh menu
     } catch (error) {
@@ -104,7 +106,7 @@ const MenuManagement = () => {
   // ❌ Delete item
   const handleDeleteItem = async (id) => {
     try {
-      await axios.delete(`/api/menu/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/menu/${id}`);
       fetchMenu();
     } catch (error) {
       console.error('Error deleting menu item', error);
@@ -167,7 +169,7 @@ const HoursManagement = () => {
   const fetchHours = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/hours');
+      const response = await axios.get(`${API_BASE_URL}/api/hours`);
       setHours(response.data);
     } catch (error) {
       console.error('Error fetching hours', error);
@@ -183,7 +185,7 @@ const HoursManagement = () => {
   const handleUpdateHours = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('/api/hours', hours);
+      await axios.put(`${API_BASE_URL}/api/hours`, hours);
       setMessage('Hours updated successfully!');
     } catch (error) {
       console.error('Error updating hours', error);

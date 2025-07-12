@@ -15,6 +15,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private String role; // 'worker' or 'client'
 
     // ✅ Getters
     public Long getUserId() {
@@ -41,6 +42,10 @@ public class User {
         return phoneNumber;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     // ✅ Setters
     public void setUserId(Long userId) {
         this.userId = userId;
@@ -64,5 +69,9 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

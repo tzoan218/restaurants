@@ -19,26 +19,19 @@ public class UserController {
 
     // === LOGIN endpoint ===
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> loginRequest) {
-        // 📌 1. Extract email and password from JSON body
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-
-        // 📌 2. Look for the user by email in the database
         User user = userRepository.findByEmail(email);
 
-        if (user != null) {
-            // 📌 3. Compare password with what's stored in the database
-            if (user.getPasswordHash().equals(password)) {
-                // ✅ Match: send OK status
-                return ResponseEntity.ok("Login successful");
-            } else {
-                // ❌ Password wrong
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
-            }
+        if (user != null && user.getPasswordHash().equals(password)) {
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Login successful");
+            response.put("role", user.getRole());
+            response.put("userId", user.getUserId());
+            return ResponseEntity.ok(response);
         } else {
-            // ❌ No user with that email
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(java.util.Map.of("error", "Invalid credentials"));
         }
     }
 }
