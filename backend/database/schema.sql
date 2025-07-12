@@ -1,12 +1,5 @@
--- Create database
-CREATE DATABASE restaurant_db;
-
--- Connect to the database
-\c restaurant_db;
-
--- Create tables
--- Users table for authentication
-CREATE TABLE users (
+-- === TABLE: users ===
+CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -17,16 +10,16 @@ CREATE TABLE users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Menu categories
-CREATE TABLE menu_categories (
+-- === TABLE: menu_categories ===
+CREATE TABLE IF NOT EXISTS menu_categories (
     category_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Menu items
-CREATE TABLE menu_items (
+-- === TABLE: menu_items ===
+CREATE TABLE IF NOT EXISTS menu_items (
     item_id SERIAL PRIMARY KEY,
     category_id INTEGER REFERENCES menu_categories(category_id),
     name VARCHAR(255) NOT NULL,
@@ -37,8 +30,8 @@ CREATE TABLE menu_items (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Reservations
-CREATE TABLE reservations (
+-- === TABLE: reservations ===
+CREATE TABLE IF NOT EXISTS reservations (
     reservation_id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(user_id),
     reservation_date DATE NOT NULL,
@@ -50,10 +43,10 @@ CREATE TABLE reservations (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Restaurant hours
-CREATE TABLE restaurant_hours (
+-- === TABLE: restaurant_hours ===
+CREATE TABLE IF NOT EXISTS restaurant_hours (
     day_id SERIAL PRIMARY KEY,
-    day_name VARCHAR(20) NOT NULL,
+    day_name VARCHAR(20) NOT NULL UNIQUE,
     open_time TIME NOT NULL,
     close_time TIME NOT NULL,
     is_closed BOOLEAN DEFAULT false,
@@ -61,13 +54,14 @@ CREATE TABLE restaurant_hours (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default menu categories
+-- === INSERT default categories ===
 INSERT INTO menu_categories (name, description) VALUES
     ('Starters', 'Appetizing beginning to your meal'),
     ('Main Courses', 'Our signature dishes'),
-    ('Desserts', 'Sweet endings to your dining experience');
+    ('Desserts', 'Sweet endings to your dining experience')
+ON CONFLICT DO NOTHING;
 
--- Insert sample menu items
+-- === INSERT sample menu items ===
 INSERT INTO menu_items (category_id, name, description, price) VALUES
     (1, 'Bruschetta', 'Toasted bread topped with tomatoes, garlic, and fresh basil', 8.00),
     (1, 'Caesar Salad', 'Crisp romaine lettuce with Caesar dressing, croutons, and parmesan', 10.00),
@@ -77,9 +71,10 @@ INSERT INTO menu_items (category_id, name, description, price) VALUES
     (2, 'Vegetable Risotto', 'Creamy Arborio rice with seasonal vegetables', 18.00),
     (3, 'Tiramisu', 'Classic Italian dessert with coffee and mascarpone', 8.00),
     (3, 'Chocolate Lava Cake', 'Warm chocolate cake with a molten center', 9.00),
-    (3, 'Crème Brûlée', 'Classic French vanilla custard with caramelized sugar', 8.00);
+    (3, 'Crème Brûlée', 'Classic French vanilla custard with caramelized sugar', 8.00)
+ON CONFLICT DO NOTHING;
 
--- Insert restaurant hours
+-- === INSERT default restaurant hours ===
 INSERT INTO restaurant_hours (day_name, open_time, close_time) VALUES
     ('Monday', '11:00', '22:00'),
     ('Tuesday', '11:00', '22:00'),
@@ -87,40 +82,53 @@ INSERT INTO restaurant_hours (day_name, open_time, close_time) VALUES
     ('Thursday', '11:00', '22:00'),
     ('Friday', '11:00', '23:00'),
     ('Saturday', '11:00', '23:00'),
-    ('Sunday', '10:00', '21:00');
+    ('Sunday', '10:00', '21:00')
+ON CONFLICT (day_name) DO NOTHING;
 
--- Create indexes for better performance
-CREATE INDEX idx_menu_items_category ON menu_items(category_id);
-CREATE INDEX idx_reservations_user ON reservations(user_id);
-CREATE INDEX idx_reservations_date ON reservations(reservation_date);
-CREATE INDEX idx_users_email ON users(email);
+-- === CREATE INDEXES ===
+CREATE INDEX IF NOT EXISTS idx_menu_items_category ON menu_items(category_id);
+CREATE INDEX IF NOT EXISTS idx_reservations_user ON reservations(user_id);
+CREATE INDEX IF NOT EXISTS idx_reservations_date ON reservations(reservation_date);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
--- Create function to update timestamp
+-- === CREATE TRIGGER FUNCTION ===
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE plpgsql;
 
--- Create triggers for updating timestamps
-CREATE TRIGGER update_users_updated_at
-    BEFORE UPDATE ON users
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+-- === CREATE TRIGGERS ===
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_users_updated_at') THEN
+        CREATE TRIGGER update_users_updated_at
+        BEFORE UPDATE ON users
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at_column();
+    END IF;
 
-CREATE TRIGGER update_menu_items_updated_at
-    BEFORE UPDATE ON menu_items
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_menu_items_updated_at') THEN
+        CREATE TRIGGER update_menu_items_updated_at
+        BEFORE UPDATE ON menu_items
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at_column();
+    END IF;
 
-CREATE TRIGGER update_reservations_updated_at
-    BEFORE UPDATE ON reservations
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_reservations_updated_at') THEN
+        CREATE TRIGGER update_reservations_updated_at
+        BEFORE UPDATE ON reservations
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at_column();
+    END IF;
 
-CREATE TRIGGER update_restaurant_hours_updated_at
-    BEFORE UPDATE ON restaurant_hours
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_restaurant_hours_updated_at') THEN
+        CREATE TRIGGER update_restaurant_hours_updated_at
+        BEFORE UPDATE ON restaurant_hours
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+END;
+$$;
