@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './WorkerDashboard.css';
+
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -153,7 +155,7 @@ const MenuManagement = () => {
           required
           step="0.01"
         />
-        <button type="submit">Add Item</button>
+        <button type="submit" className="add-item-button">Add Item</button>
       </form>
     </div>
   );
@@ -219,7 +221,7 @@ const HoursManagement = () => {
           />
         </label>
         <br />
-        <button type="submit">Update Hours</button>
+        <button type="submit" className="add-item-button">Update Hours</button>
       </form>
       {message && <p>{message}</p>}
     </div>
